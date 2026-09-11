@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Vinayagar Connect & Colour - Kids Learning Game</title>
+  <meta name="description" content="A fun and interactive connect-the-dots and colouring game featuring Lord Vinayagar for kids and preschool children!">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Animated Decorative Elements -->
+  <div class="bg-decorations" aria-hidden="true">
+    <div class="diya diya-1">🪔</div>
+    <div class="diya diya-2">🪔</div>
+    <div class="flower fl-1">🌸</div>
+    <div class="flower fl-2">🌼</div>
+    <div class="flower fl-3">🌺</div>
+    <div class="flower fl-4">✨</div>
+    <div class="star st-1">⭐</div>
+    <div class="star st-2">🌟</div>
+  </div>
+
+  <!-- Audio Controls Header Bar -->
+  <header class="app-header">
+    <div class="logo-mini">🏫 TN HAPPY KIDS PLAY SCHOOL</div>
+    <div class="header-actions">
+      <button id="soundToggleBtn" class="icon-btn" aria-label="Toggle Sound">
+        <span id="soundIcon">🔇</span>
+        <span class="btn-label">Sound OFF</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Container Box -->
+  <main class="game-container">
+
+    <!-- SCREEN 1: HOME SCREEN -->
+    <section id="homeScreen" class="screen active">
+      <div class="festive-banner">✨ 🕉️ ✨</div>
+      <h1 class="main-title">Vinayagar Connect & Colour</h1>
+      <p class="subtitle">Connect the numbers and discover magical Vinayagar!</p>
+
+      <div class="hero-illustration">
+        <div class="hero-vinayagar-badge">
+          <svg viewBox="0 0 200 200" class="hero-svg">
+            <image href="vinayagar.jpg" x="20" y="20" width="160" height="160" preserveAspectRatio="xMidYMid meet" clip-path="url(#heroClip)" />
+            <clipPath id="heroClip"><circle cx="100" cy="100" r="82" /></clipPath>
+          </svg>
+        </div>
+      </div>
+
+      <div class="instruction-box">
+        <span class="instruct-icon">👉</span>
+        <span>Connect <strong>1 ➔ 2 ➔ 3 ➔ 4...</strong></span>
+      </div>
+
+      <button id="startBtn" class="btn btn-primary btn-large glow-btn">
+        <span class="btn-text">▶ PLAY NOW</span>
+      </button>
+    </section>
+
+    <!-- SCREEN 2: GAMEPLAY SCREEN -->
+    <section id="gameScreen" class="screen">
+      <div class="game-header">
+        <div class="progress-pill">
+          <span class="progress-icon">⭐</span>
+          <span id="progressText">0 / 32 Completed</span>
+        </div>
+        <button id="hintBtn" class="btn-hint" aria-label="Show Hint">💡 Hint</button>
+      </div>
+
+      <!-- Feedback popup banner -->
+      <div id="feedbackToast" class="toast-message" aria-live="polite"></div>
+
+      <!-- Interactive SVG Canvas Area -->
+      <div class="canvas-wrapper">
+        <svg id="gameSvg" viewBox="0 0 600 900" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="5" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+
+            <radialGradient id="auraBg" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FFF9C4" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#FFF9C4" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+
+          <!-- Background Aura Sparkle -->
+          <circle id="bgAura" cx="300" cy="350" r="260" fill="url(#auraBg)" opacity="0" class="fade-transition" />
+
+          <!-- FULL COLOR ILLUSTRATION LAYER (Revealed upon completing dot connection) -->
+          <g id="colorIllustrationGroup" opacity="0" class="color-reveal-group">
+            <image href="vinayagar.jpg" x="20" y="40" width="560" height="820" preserveAspectRatio="xMidYMid meet" opacity="1" />
+          </g>
+
+          <!-- DOTTED GUIDE OUTLINE LAYER -->
+          <path id="guidePath" d="" class="guide-path" />
+
+          <!-- CONNECTED USER LINES LAYER -->
+          <g id="connectedLinesGroup"></g>
+
+          <!-- ACTIVE GLOW LINE (Animation from last point) -->
+          <line id="activeLine" x1="0" y1="0" x2="0" y2="0" class="active-connecting-line" />
+
+          <!-- NUMBERED DOTS INTERACTION LAYER -->
+          <g id="dotsGroup"></g>
+
+          <!-- SPARKLE PARTICLES LAYER -->
+          <g id="sparkleGroup"></g>
+        </svg>
+      </div>
+
+      <div class="game-footer">
+        <button id="resetGameBtn" class="btn btn-secondary btn-small">↺ Restart</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: FULL SCREEN VINAYAGAR & CELEBRATION MODAL OVERLAY -->
+    <div id="celebrationOverlay" class="overlay-screen hidden">
+      <!-- Fullscreen Vinayagar Image View -->
+      <div class="fullscreen-vinayagar-container">
+        <img src="vinayagar.jpg" alt="Vinayagar Full Screen" class="fullscreen-vinayagar-img" />
+        <div class="fullscreen-sparkles">✨ 🌸 🌟 🌺 ✨</div>
+      </div>
+
+      <div class="celebration-card animate-bounce-in">
+        <div class="confetti-burst">🎉 🌸 🌟 🌺 🎊</div>
+        <h2 class="success-heading">Wonderful! 🎉</h2>
+        <p class="success-sub">You completed Lord Vinayagar!</p>
+        
+        <button id="proceedToRewardBtn" class="btn btn-primary glow-btn btn-large">
+          <span>🎁 GET YOUR REWARD!</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SCREEN 4: REWARD SCREEN -->
+    <section id="rewardScreen" class="screen">
+      <div class="reward-header">
+        <h2 class="reward-title">Your Reward is Ready!</h2>
+        <p class="reward-subtitle">Tap the magical gift box to see your surprise!</p>
+      </div>
+
+      <div class="gift-area">
+        <div id="giftBox" class="gift-box pulse-gift" role="button" tabindex="0" aria-label="Open Gift Box">
+          <div class="gift-lid">🎁</div>
+          <div class="gift-bow">✨</div>
+          <div class="gift-body">📦</div>
+          <div class="gift-sparkles">⭐ 🌟 ⭐</div>
+        </div>
+      </div>
+
+      <button id="openGiftBtn" class="btn btn-primary btn-large glow-btn">
+        <span>🎁 OPEN GIFT</span>
+      </button>
+
+    </section>
+
+  </main>
+
+  <!-- REWARD POPUP WITH ADMISSION FORM (Body Level for True Viewport Center Overlay) -->
+  <div id="rewardModal" class="reward-modal hidden">
+    <div class="reward-card animate-pop admission-card">
+      <div class="trophy-icon">🏆</div>
+      <h2 class="reward-badge-title">🎁 GREAT JOB!</h2>
+      <p class="reward-message">You are a <strong>⭐ Vinayagar Champion ⭐</strong></p>
+
+      <!-- SCHOOL ADMISSION ENQUIRY FORM -->
+      <div class="admission-form-wrapper">
+        <div class="school-form-header">
+          <span class="school-icon">🏫</span>
+          <h3>TN HAPPY KIDS PLAY SCHOOL</h3>
+          <p>Admission Enquiry Form 2026-27</p>
+        </div>
+
+        <form id="admissionForm" class="admission-form">
+          <div class="form-group">
+            <label for="studentName">👶 Student Name *</label>
+            <input type="text" id="studentName" placeholder="Enter child's full name" required />
+          </div>
+
+          <div class="form-group row-group">
+            <div class="half-group">
+              <label for="studentAge">🎂 Child Age *</label>
+              <input type="number" id="studentAge" min="1" max="6" placeholder="e.g. 3" required />
+            </div>
+            <div class="half-group">
+              <label for="classSelect">📚 Class Seeking</label>
+              <select id="classSelect">
+                <option value="playgroup">Playgroup</option>
+                <option value="nursery">Pre-Nursery / LKG</option>
+                <option value="ukg">UKG</option>
+                <option value="daycare">Day Care</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="fatherName">👨‍👩‍👧 Father / Parent Name *</label>
+            <input type="text" id="fatherName" placeholder="Enter parent's name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="parentPhone">📞 Phone Number *</label>
+            <input type="tel" id="parentPhone" placeholder="Enter 10-digit mobile number" required />
+          </div>
+
+          <div class="form-group">
+            <label for="address">🏠 Residence Address *</label>
+            <textarea id="address" rows="2" placeholder="Enter home address" required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-large glow-btn submit-btn">
+            <span>📝 SUBMIT ADMISSION ENQUIRY</span>
+          </button>
+        </form>
+
+        <div id="formSuccessToast" class="form-success-toast hidden">
+          🎉 <strong>Thank You!</strong> Your admission enquiry has been submitted successfully to TN HAPPY KIDS PLAY SCHOOL!
+        </div>
+      </div>
+
+      <button id="playAgainBtn" class="btn btn-secondary btn-large play-again-btn">
+        <span>🔄 PLAY AGAIN</span>
+      </button>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Made with ❤️ for Kids & Preschoolers</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
